@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String               @id @default(uuid())
+  name               String
+  email              String               @unique
+  password           String
+  phone_number       String
+  Property           Property[]
+  Comment            Reviews[]
+  updatedAt          DateTime             @updatedAt
+  createdAt          DateTime             @default(now())
+  PropertyInAnalysis PropertyInAnalysis[]
+}
+
+model Reviews {
+  id                   String              @id @default(uuid())
+  rating               Int
+  comment              String              @db.Text
+  user_Id              String
+  user_name            String              @db.VarChar(255)
+  property_Id          String
+  User                 User                @relation(fields: [user_Id], references: [id], onDelete: Cascade)
+  Property             Property            @relation(fields: [property_Id], references: [id], onDelete: Cascade)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  PropertyInAnalysis   PropertyInAnalysis? @relation(fields: [propertyInAnalysisId], references: [id])
+  propertyInAnalysisId String?
+}
+
+model Address {
+  id                 String               @id @default(uuid())
+  cep                String
+  street             String
+  number             String
+  city               String
+  state              String
+  latitude           String
+  longitude          String
+  Property           Property[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  PropertyInAnalysis PropertyInAnalysis[]
+}
+
+model Property {
+  id                  String                   @id @default(uuid())
+  inscription_number  String                   @unique
+  type_id             String
+  description         String                   @db.Text
+  rent_price          String
+  user_Id             String
+  address_id          String
+  disabled            Boolean                  @default(false)
+  Comments            Reviews[]
+  Images              Image[]
+  Address             Address                  @relation(fields: [address_id], references: [id])
+  User                User                     @relation(fields: [user_Id], references: [id])
+  Type                PropertyCategory         @relation(fields: [type_id], references: [id])
+  CaracteristicsPrope CaracteristicsProperty[]
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  StatusProperty      StatusProperty?          @relation(fields: [statusPropertyId], references: [id])
+  statusPropertyId    String?
+}
+
+model PropertyInAnalysis {
+  id                  String                   @id @default(uuid())
+  inscription_number  String                   @unique
+  type_id             String
+  description         String                   @db.Text
+  rent_price          String
+  user_Id             String
+  address_id          String
+  statusPropertyId    String
+  disabled            Boolean                  @default(false)
+  Comments            Reviews[]
+  Images              Image[]
+  Address             Address                  @relation(fields: [address_id], references: [id])
+  User                User                     @relation(fields: [user_Id], references: [id])
+  Type                PropertyCategory         @relation(fields: [type_id], references: [id])
+  CaracteristicsPrope CaracteristicsProperty[]
+  StatusProperty      StatusProperty?          @relation(fields: [statusPropertyId], references: [id])
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+}
+
+model CaracteristicsProperty {
+  id                   String              @id @default(uuid())
+  id_property          String
+  total_occupancy      Int
+  total_bedrooms       Int
+  total_bathrooms      Int
+  Property             Property            @relation(fields: [id_property], references: [id])
+  has_wifi             Boolean             @default(false)
+  has_tv               Boolean             @default(false)
+  has_air_conditioning Boolean             @default(false)
+  has_washing_machine  Boolean             @default(false)
+  has_kitchen          Boolean             @default(false)
+  has_suite            Boolean             @default(false)
+  has_parking_space    Boolean             @default(false)
+  has_pool             Boolean             @default(false)
+  has_beach_view       Boolean             @default(false)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  PropertyInAnalysis   PropertyInAnalysis? @relation(fields: [propertyInAnalysisId], references: [id])
+  propertyInAnalysisId String?
+}
+
+model PropertyCategory {
+  id                 String               @id @default(uuid())
+  name               String               @unique
+  Property           Property[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  PropertyInAnalysis PropertyInAnalysis[]
+}
+
+model Image {
+  id                   String              @id @default(uuid())
+  path                 String              @db.VarChar(255)
+  property_Id          String
+  Property             Property            @relation(fields: [property_Id], references: [id], onDelete: Cascade)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  PropertyInAnalysis   PropertyInAnalysis? @relation(fields: [propertyInAnalysisId], references: [id])
+  propertyInAnalysisId String?
+}
+
+model StatusProperty {
+  id                 String               @id @default(uuid())
+  status             String               @unique
+  description        String
+  Property           Property[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  PropertyInAnalysis PropertyInAnalysis[]
+}
