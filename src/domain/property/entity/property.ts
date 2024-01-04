@@ -14,4 +14,8 @@ export class Property {
     if (!this._name) throw new Error("Name is required");
     if (!this._value) throw new Error("Value is required");
   }
+
+  get id(): string {
+    return this._id;
+  }
 }

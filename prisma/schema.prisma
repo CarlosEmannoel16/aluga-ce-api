@@ -15,6 +15,11 @@ model User {
   name               String
   email              String               @unique
   password           String
+  cep                String
+  street             String
+  number             String
+  city               String
+  state              String
   phone_number       String
   Property           Property[]
   Comment            Reviews[]
