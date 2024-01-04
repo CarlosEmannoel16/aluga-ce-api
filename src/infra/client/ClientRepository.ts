@@ -1,8 +1,8 @@
-import { Client } from "@/domain/client/entity/client";
 import { FindClientByIdProtocolRepository } from "@/protocols/repository/client/findClientByIdProtocolRepository";
 import dataBase from "../../loaders/database";
 import { ClientFactory } from "@/domain/client/factory/client-factory";
 import { Address } from "@/domain/client/value-object/address";
+import { Client } from "@/domain/client/entity/client";
 
 export class ClientRepository implements FindClientByIdProtocolRepository {
   async findById(id: string): Promise<Client | undefined> {
