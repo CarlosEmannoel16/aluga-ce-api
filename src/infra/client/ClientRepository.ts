@@ -1,10 +1,33 @@
-import { FindClientByIdProtocolRepository } from "@/protocols/repository/client/findClientByIdProtocolRepository";
+import { Client } from "@/domain/client/entity/client";
 import dataBase from "../../loaders/database";
 import { ClientFactory } from "@/domain/client/factory/client-factory";
 import { Address } from "@/domain/client/value-object/address";
-import { Client } from "@/domain/client/entity/client";
+import {
+  CreateClientProtocolRepository,
+  FindClientByIdProtocolRepository,
+} from "@/protocols/repository/client";
 
-export class ClientRepository implements FindClientByIdProtocolRepository {
+export class ClientRepository
+  implements FindClientByIdProtocolRepository, CreateClientProtocolRepository
+{
+  async create(client: Client): Promise<Client> {
+    await dataBase.user.create({
+      data: {
+        id: client.id,
+        email: client.email,
+        name: client.name,
+        phone_number: client.phone,
+        street: client.address.street,
+        number: client.address.number,
+        cep: client.address.zipCode,
+        city: client.address.city,
+        password: client.password,
+        state: client.address.state,
+      },
+    });
+
+    return client;
+  }
   async findById(id: string): Promise<Client | undefined> {
     const result = await dataBase.user.findFirst({
       where: {
@@ -24,7 +47,8 @@ export class ClientRepository implements FindClientByIdProtocolRepository {
           result.number,
           result.cep,
           "",
-          result.city
+          result.city,
+          result.state
         ),
       });
     }
