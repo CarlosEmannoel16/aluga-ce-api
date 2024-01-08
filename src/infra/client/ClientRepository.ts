@@ -14,12 +14,12 @@ export class ClientRepository
     await dataBase.user.create({
       data: {
         id: client.id,
-        email: client.email,
         name: client.name,
+        email: client.email,
         phone_number: client.phone,
+        cep: client.address.zipCode,
         street: client.address.street,
         number: client.address.number,
-        cep: client.address.zipCode,
         city: client.address.city,
         password: client.password,
         state: client.address.state,
